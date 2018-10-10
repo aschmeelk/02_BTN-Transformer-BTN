@@ -1,0 +1,65 @@
+gra_casing_make:
+LOAD
+    CASING_MAKE_KEY,
+    "Casing Make"		as CASING_MAKE,
+    Brand				as DESCRIPTION,
+    TIRE,
+    VIRGIN_SUFFIX,
+    NON_VIRGIN_SUFFIX,
+    FG_VIRGIN_SUFFIX,
+    LOGICAL_DELETE,
+    FG_NON_VIRGIN_SUFFIX
+FROM [$(LibConnection)gra_casing_make_$(vDealer).qvd]
+(qvd)
+WHERE EXISTS(CASING_MAKE_KEY)
+;
+
+
+gra_casing_series:
+LOAD
+    CASING_SERIES_KEY,
+    Series					as CASING_SERIES,
+    "Series Desc"			as DESCRIPTION
+FROM [$(LibConnection)gra_casing_series_$(vDealer).qvd]
+(qvd)
+WHERE EXISTS(CASING_SERIES_KEY)
+;
+
+
+
+
+
+gra_casing_size:
+LOAD
+    CASING_SIZE_KEY,
+    CASING_SIZE,
+    DESCRIPTION,
+    MIN_CIRCUM,
+    MAX_CIRCUM,
+    CASING_CONSTRUCTION,
+    MIN_BUILD_CIRCUM,
+    MAX_BUILD_CIRCUM,
+    STOCK_CASING_PART_NUMBER,
+    CC_PART_NUMBER,
+    CP_REJECT_PART_NUMBER,
+    SECTION_WIDTH,
+    ASPECT_RATIO,
+    WHEEL_DIAMETER,
+	LOGICAL_DELETE
+FROM [$(LibConnection)gra_casing_size_$(vDealer).qvd]
+(qvd)
+WHERE EXISTS(CASING_SIZE_KEY)
+;
+
+
+gra_casing_credit_repair:
+LOAD
+    CODE,
+    DESCRIPTION,
+    REPAIR_KEY,
+    AMOUNT
+FROM [$(LibConnection)gra_casing_credit_repair_$(vDealer).qvd]
+(qvd);
+
+
+

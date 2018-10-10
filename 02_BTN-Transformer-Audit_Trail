@@ -1,0 +1,53 @@
+gra_audit_trail:
+LOAD
+    AUDIT_TRAIL_KEY   AS AUDIT_TRAIL_PK,
+    AUDIT_User_Key,
+    CREATE_DT,
+    POST_NAME,
+    ACTION_NAME,
+    ACTUAL_WARRANTY_PERCENT,
+    WARRANTY_DISPOSITION,
+    WORK_ORDER_LINE_KEY,
+    RERUN_IND,
+    CASING_EDIT_INFO
+FROM [$(LibConnection)gra_audit_trail_$(vDealer).qvd]
+(qvd)
+where EXISTS(WORK_ORDER_LINE_KEY)
+//floor(CREATE_DT) >=  $(vYearMinus3)
+//and floor(CREATE_DT) <=  $(vCurrentDate)
+//and EXISTS(WORK_ORDER_LINE_KEY)
+;
+
+inner join (gra_audit_trail)
+LOAD * INLINE [
+ACTION_NAME
+ADVANCE,
+ENTERED,
+IGNORE_CAM_AGE,
+IGNORE_CAM_NTR,
+IGNORE_CAM_REP,
+RECALL,
+REJECT,
+REPAIR,
+RERUN_REWORK,
+SHIP_RECEIVING,
+SHOP_FLOOR_LOCATION,
+UNREJECT
+];
+
+
+
+LEFT JOIN (gra_audit_trail)
+LOAD
+    User_Key		AS AUDIT_User_Key,
+    LOGIN			AS	AUDIT_USER_LOGIN,
+    FIRST_NAME		AS  AUDIT_FIRST_NAME,
+    LAST_NAME		AS  AUDIT_LAST_NAME
+FROM [$(LibConnection)gra_user_$(vDealer).qvd]
+(qvd);
+
+
+
+
+
+

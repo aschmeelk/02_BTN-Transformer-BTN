@@ -1,0 +1,37 @@
+// http://help.qlik.com/en-US/sense/2.2/Subsystems/Hub/Content/Scripting/ScriptRegularStatements/Qualify.htm
+// The Qualify statement is used for switching on the qualification of field names, 
+// i.e. field names will get the table name as a prefix.
+
+QUALIFY
+  ACTIVE,
+  CASING_ID,
+  CITY,
+  CODE,
+  CREATE_DT,
+  CTC_APPLIED,
+  CURRENT_COST,
+  DESCRIPTION,
+  DISPOSAL_CHARGES_FK,
+  FAX_NUMBER,
+  FGRO_PART_NUMBER,
+  FGRR_PART_NUMBER,
+  INTERFACE_ID1,
+  INTERFACE_ID2,
+  LOGICAL_DELETE,
+  PACK_LIST_FK,
+  PHONE_NUMBER,
+  POST_NAME,
+  POSTAL_CODE,
+  RERUN_IND,
+  RM_PART_NUMBER,
+  RT_DOT,
+  STATE_PROVINCE,
+  STATUS,
+  TMP_PLANT_NUM_BT_LOAD,
+  TREAD_APPLIED,
+  TREAD_DEPTH,
+  [TYPE],
+  USER_FK,
+  WORK_ORDER_LINE_FK,
+  ZONE_REPAIR_PART_NUMBER
+;

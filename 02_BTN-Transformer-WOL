@@ -1,0 +1,61 @@
+trace ;
+trace ----- gra_work_order_line -----;
+
+	gra_work_order_line:
+	//create OR flag for Raw Material In-Process
+	LOAD 
+    	*,
+		if(_flagRMInProcess=1 or _flagRMInProcessShip=1,1,0     )                           as _flagRM_IP
+		;
+	LOAD *,
+	 	num([Avg Tread Depth]/[Orig Tread Depth]) 	as [Tread %]
+		;
+	LOAD *,
+	 if(MOLD_TYPE='C',applymap('MAP_gra_custom_mold_dimension_$(vDealerMap)',TREAD_DESC_KEY,null()),
+     				  applymap('MAP_gra_tread_dimension_$(vDealerMap)',TREAD_DESC_KEY,null())) 		as [Orig Tread Depth],
+	 1 											  as Counter,
+     
+     
+     //MB
+     CASING_SIZE_KEY & '|' & TREAD_DESC_KEY & '|' &  TREAD_WIDTH_KEY as RAW_MATERIALS_KEY,
+    
+      
+      
+	 if(NOT IsNull(REJECT_REASON_KEY),1,0)		  as [Reject Count],
+	 if(NOT IsNull(REJECT_REASON_KEY),'Yes','No') as [Is Rejected],
+	 NOT isnull(COMPLETE_DT)					  as [Is Completed],
+     SHIPPING_LOCATION=applymap('MAP_ship_plant_match_$(vDealerMap)',WORK_ORDER_HEADER_KEY,'') 														as _flagShipLocationPlantMatch,
+     isnull(REJECT_POST_NAME) OR match(REJECT_POST_NAME,'INITIAL_INSPECTION','BUFFER','CIA','SKIVE','REPAIR','FINAL_INSPECTION')=0 	as _flagRejectOther,
+     
+     //mb
+     if((match(POST_MARKER,'BUILDER','FINAL_INSPECTION','PRE-MOLD','SHIPPING')
+           and (CASING_STATUS='SHOP_FLOOR' or CASING_STATUS='COMPLETE') ),1,0)         as _flagRMInProcess,
+     if(CASING_STATUS='COMPLETE' AND POST_MARKER='SHIPPING',1,0)                       as _flagRMInProcessShip,
+     
+     if(POST_MARKER='INITIAL_INSPECTION',floor(today())-floor(CREATION_DATE),floor(today())-floor(CASING_ADVANCE_TIMER)) as [Days]
+     
+	;
+	LOAD *
+	Resident gra_work_order_line_tmp;
+    
+    DROP TABLE gra_work_order_line_tmp;
+    
+
+
+
+LEFT JOIN (gra_work_order_line)   
+LOAD
+     TREAD_DESC_KEY,
+     CASING_SIZE_KEY,
+     TREAD_WIDTH_KEY,
+     FINISHED_RETREAD_PART_NUMBER 	AS FINISHED_PART,
+     CC_CAP_PART_NUMBER				AS CC_CAP_PART,
+     AD_CC_CASING_PART_NUMBER		AS CC_CASING_PART
+FROM [$(LibConnection)gra_finished_retread_$(vDealer).qvd]
+(qvd);
+
+
+
+
+
+drop field REJECT_REASON from gra_work_order_line;

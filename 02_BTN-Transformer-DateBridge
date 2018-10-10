@@ -1,0 +1,156 @@
+// Change Date format if in canada
+LET vCountry = Peek('Plant_Country', -1, 'gra_plant_setup');
+
+If vCountry = 'CA' then
+	Set DateFormat = 'D/M/YYYY';
+    SET TimestampFormat='D/M/YYYY h:mm:ss[.fff] TT';
+Else
+	Set DateFormat = 'M/D/YYYY';
+	SET TimestampFormat='M/D/YYYY h:mm:ss[.fff] TT';
+End If
+
+WORK_ORDER_HEADER_MAP_$(vDealerMap):
+Mapping Load
+	WORK_ORDER_LINE_KEY,
+    WORK_ORDER_HEADER_KEY
+Resident gra_work_order_line;
+
+
+DateBridge:
+Load  Distinct
+     'W' as DateType,
+     WORK_ORDER_HEADER_KEY,
+     date(floor([WO Date])) as MasterDate
+Resident gra_work_order_header
+where not isnull([WO Date])
+;
+
+Left Join (DateBridge)
+LOAD DISTINCT
+	WORK_ORDER_HEADER_KEY,
+    WORK_ORDER_LINE_KEY
+Resident gra_work_order_line;
+
+Concatenate(DateBridge)
+Load  Distinct
+     'C' as DateType,
+  //   WORK_ORDER_HEADER_KEY,
+     WORK_ORDER_LINE_KEY,
+     date(floor([Completed Date])) as MasterDate
+Resident gra_work_order_line
+where  not isnull([Completed Date]) 
+;
+
+
+Concatenate(DateBridge)
+Load  Distinct
+     'R' as DateType,
+  //   WORK_ORDER_HEADER_KEY,
+     WORK_ORDER_LINE_KEY,
+     date(floor(REJECT_DATE)) as MasterDate
+Resident gra_work_order_line
+where  floor(REJECT_DATE) > 0
+;
+
+
+Concatenate(DateBridge)
+Load Distinct
+     'A' as DateType,
+  //   ApplyMap('WORK_ORDER_HEADER_MAP_$(vDealerMap)',WORK_ORDER_LINE_KEY) as WORK_ORDER_HEADER_KEY,
+     WORK_ORDER_LINE_KEY,
+     date(floor([Audit Create])) as MasterDate
+Resident gra_audit_trail
+where not isnull([Audit Create]) 
+;
+
+
+
+Concatenate(DateBridge)
+Load Distinct
+     'U' as DateType,
+   //  ApplyMap('WORK_ORDER_HEADER_MAP_$(vDealerMap)',WORK_ORDER_LINE_KEY) as WORK_ORDER_HEADER_KEY,
+     WORK_ORDER_LINE_KEY,
+     date(floor([Update Date])) as MasterDate
+Resident gra_stock_movement
+where not isnull([Update Date])  
+;
+
+
+PackListTemp:
+Load
+	WORK_ORDER_LINE_KEY,
+    PACK_LIST_KEY
+    Resident gra_pack_list_detail;
+    
+Left Join(PackListTemp)
+Load
+	PACK_LIST_KEY,
+    pack_list_date_approved
+    Resident gra_pack_list;
+
+Concatenate(DateBridge)
+Load Distinct
+	'P' as DateType,
+//     ApplyMap('WORK_ORDER_HEADER_MAP_$(vDealerMap)',WORK_ORDER_LINE_KEY) as WORK_ORDER_HEADER_KEY,
+     WORK_ORDER_LINE_KEY,
+     date(floor(pack_list_date_approved)) as MasterDate
+     Resident PackListTemp
+     where not isnull(pack_list_date_approved)  
+     ;
+     
+Drop Table PackListTemp;
+
+
+
+
+QuartersMap_$(vDealerMap):  
+MAPPING LOAD   
+rowno() as Month,  
+'Q' & Ceil (rowno()/3) as Quarter  
+AUTOGENERATE (12);  
+
+
+
+Temp:  
+Load  
+               min(MasterDate) as minDate, 
+               max(MasterDate) as maxDate  
+Resident DateBridge;  
+  
+Let varMinDate = Num(Peek('minDate', 0, 'Temp'));  
+Let varMaxDate = Num(Peek('maxDate', 0, 'Temp'));  
+DROP Table Temp;  
+
+
+
+TempCalendar:  
+LOAD  
+               $(varMinDate) + Iterno()-1 As Num,  
+               Date($(varMinDate) + IterNo() - 1) as TempDate  
+               AutoGenerate 1 While $(varMinDate) + IterNo() -1 <= $(varMaxDate);
+MasterCalendar:  
+Load  
+               TempDate AS MasterDate,  
+               week(TempDate) As Week,  
+               Year(TempDate) As Year,  
+               Month(TempDate) As Month,  
+               Day(TempDate) As Day,  
+               YeartoDate(TempDate)*-1 as CurYTDFlag,  
+               YeartoDate(TempDate,-1)*-1 as LastYTDFlag,  
+               inyear(TempDate, Monthstart($(varMaxDate)),-1) as RC12,  
+               date(monthstart(TempDate), 'MMM-YYYY') as MonthYear,  
+               ApplyMap('QuartersMap_$(vDealerMap)', month(TempDate), Null()) as Quarter,  
+               Week(weekstart(TempDate)) & '-' & WeekYear(TempDate) as WeekYear,  
+               WeekDay(TempDate) as WeekDay  
+Resident TempCalendar  
+Order By TempDate ASC;  
+
+
+Drop Table TempCalendar;  
+
+
+//DROP FIELD WORK_ORDER_HEADER_KEY FROM gra_work_order_line;
+DROP FIELD WORK_ORDER_HEADER_KEY FROM DateBridge;
+
+
+

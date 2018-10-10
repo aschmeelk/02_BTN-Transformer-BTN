@@ -1,0 +1,90 @@
+gra_tread_desc:
+LOAD
+    TREAD_DESC_KEY,
+    TREAD_DESC,
+    DESCRIPTION,
+    TREAD_PIC_FILENAME,
+    CURE_TYPE,
+    ACTIVE_FLAG,
+    LOGICAL_DELETE,
+    M3_FLAG,
+    TREAD_MAKE,
+    TREAD_BRAND,
+    IMPORTED_FLAG
+FROM [$(LibConnection)gra_tread_desc_$(vDealer).qvd]
+(qvd)
+WHERE EXISTS(TREAD_DESC_KEY)
+;
+
+gra_tread_repair:
+LOAD
+    Tread_Repair_Key  			as TREAD_REPAIR_PK,
+    WORK_ORDER_LINE_KEY,
+    REPAIR_KEY,
+    "Repair Count",
+    STATUS,
+    LOT_NUM,
+    IS_EXISTING_REPAIR,
+    RM_PART_NUMBER,
+    FGRR_PART_NUMBER,
+    FGRO_PART_NUMBER,
+    ZONE_REPAIR_PART_NUMBER,
+    AREA,
+    TREAD_STATUS,
+    REPAIR_DATE,
+    USER_ID,
+    SHOP_FLOOR_POST,
+    WASTED_REASON,
+    CURRENT_COST
+FROM [$(LibConnection)gra_tread_repair_$(vDealer).qvd]
+(qvd)
+where  EXISTS(WORK_ORDER_LINE_KEY)
+
+//floor(REPAIR_DATE) >=  $(vYearMinus3)
+//and floor(REPAIR_DATE) <=  $(vCurrentDate)
+//and EXISTS(WORK_ORDER_LINE_KEY)
+;
+
+gra_repair:
+LOAD *,
+	not isnull(REPAIR) 		as TIRE_HAS_REPAIR
+;
+LOAD
+    REPAIR_KEY,
+    REPAIR,
+    DESCRIPTION,
+    CODE,
+    "TYPE",
+    CONSTRUCTION,
+    REPAIR_SIZE,
+    RM_PART_NUMBER,
+    FGRR_PART_NUMBER,
+    FGRO_PART_NUMBER,
+    ZONE_REPAIR_PART_NUMBER,
+    FREE_REPAIR_PART_NUM,
+    REPAIR_DEMERIT_PART_NUM,
+    AD_RR_PART_NUM,
+    AD_RO_PART_NUM,
+    LOGICAL_DELETE
+FROM [$(LibConnection)gra_repair_$(vDealer).qvd](qvd)
+WHERE EXISTS(REPAIR_KEY)
+;
+
+
+
+
+
+gra_tread_width:
+LOAD
+    TREAD_WIDTH_KEY,
+    WIDTH,
+    DESCRIPTION,
+	LOGICAL_DELETE
+FROM [$(LibConnection)gra_tread_width_$(vDealer).qvd]
+(qvd)
+WHERE EXISTS(TREAD_WIDTH_KEY)
+;
+
+
+
+

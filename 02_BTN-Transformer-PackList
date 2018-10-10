@@ -1,0 +1,336 @@
+gra_pack_list_detail:
+LOAD
+    PACK_LIST_ITEM_DESCRIPTION,
+    PACK_LIST_QUANTITY,
+    PACK_LIST_KEY,
+    PACK_LIST_DETAIL_STATUS,
+    PACK_LIST_ITEM_NUM,
+    PACK_LIST_DETAIL_REC_DATE,
+    WORK_ORDER_LINE_KEY
+FROM [$(LibConnection)gra_pack_list_detail_$(vDealer).qvd]
+(qvd)
+where EXISTS(WORK_ORDER_LINE_KEY)
+//num(PACK_LIST_DETAIL_REC_DATE) >=  $(vYearMinus3)
+//and num(PACK_LIST_DETAIL_REC_DATE) <=  $(vCurrentDate)
+//and EXISTS(WORK_ORDER_LINE_KEY)
+;
+
+
+
+gra_pack_list:
+LOAD distinct
+    PACK_LIST_KEY,
+    pack_list_num,
+    pack_list_status,
+    pack_list_contents,
+    include_stock_casings,
+    pack_list_total_items,
+    pack_list_date_created,
+    pack_list_date_received,
+    pack_list_date_approved,
+    pack_list_notes,
+    PL_Type,
+    DESTINATION_CUSTOMER_FK,
+    DEST_SITE_SETUP_KEY,
+    source_plant_fk,
+    source_site_fk
+FROM [$(LibConnection)gra_pack_list_$(vDealer).qvd]
+(qvd)
+where  EXISTS(PACK_LIST_KEY)
+//floor(pack_list_date_created) >=  $(vYearMinus3)
+//and floor (pack_list_date_created) <=  $(vCurrentDate)
+//and EXISTS(PACK_LIST_KEY)
+;
+
+ left join (gra_pack_list)
+LOAD distinct
+    PLANT_SETUP_PK 	as DESTINATION_CUSTOMER_FK,
+    PLANT_CODE		AS DESTINATION_PLANT_CODE,
+    PLANT_NAME		AS DESTINATION_PLANT_NAME
+FROM [$(LibConnection)gra_plant_setup_$(vDealer).qvd]
+(qvd);
+
+
+
+left join (gra_pack_list)
+LOAD distinct 
+    CUSTOMER_INFO_SETTINGS_PK	AS DESTINATION_CUSTOMER_FK,
+    CODE						AS PACK_LIST_CUSTOMER_CODE,
+    CUSTOMER_NAME				AS PACK_LIST_CUSTOMER_NAME,
+    SALES_ID					AS PACK_LIST_SALES_ID
+FROM [$(LibConnection)gra_customer_info_settings_$(vDealer).qvd]
+(qvd);
+
+left join (gra_pack_list)
+LOAD distinct 
+    SITE_SETUP_KEY   	AS DEST_SITE_SETUP_KEY,
+    SITE_CODE			AS DESTINATION_SITE_CODE,
+    SITE_NAME			AS DESTINATION_SITE_NAME
+FROM [$(LibConnection)gra_site_setup_$(vDealer).qvd]
+(qvd);
+
+
+
+left join (gra_pack_list)
+LOAD Distinct
+    PLANT_SETUP_PK 	as source_plant_fk,
+    PLANT_CODE		AS SOURCE_PLANT_CODE,
+    PLANT_NAME		AS SOURCE_PLANT_NAME
+FROM [$(LibConnection)gra_plant_setup_$(vDealer).qvd]
+(qvd);
+
+
+
+left join (gra_pack_list)
+LOAD distinct 
+    SITE_SETUP_KEY   	AS source_site_fk,
+    SITE_CODE			AS SOURCE_SITE_CODE,
+    SITE_NAME			AS SOURCE_SITE_NAME
+FROM [$(LibConnection)gra_site_setup_$(vDealer).qvd]
+(qvd);
+
+
+
+left join (gra_pack_list)
+LOAD distinct
+    //PACK_LIST_ITEM_DESCRIPTION,
+    //PACK_LIST_QUANTITY,
+    PACK_LIST_KEY,
+    //PACK_LIST_DETAIL_STATUS,
+    //PACK_LIST_ITEM_NUM,
+    //PACK_LIST_DETAIL_REC_DATE,
+    WORK_ORDER_LINE_KEY
+FROM [$(LibConnection)gra_pack_list_detail_$(vDealer).qvd]
+(qvd);
+
+
+
+left join (gra_pack_list)
+LOAD distinct
+    WORK_ORDER_LINE_KEY,
+    TREAD_WIDTH_KEY,
+    TREAD_DESC_KEY,
+    CASING_SIZE_KEY
+    
+//     WORK_ORDER_HEADER_KEY,
+//     CASING_MAKE_KEY,
+//     TREAD_DIMENSION_KEY,
+//     CASING_SERIES_KEY,
+//     ADJUSTMENT_REASON_KEY,
+//     RFID_TAG_KEY,
+//     PROD_CUSTOMER_KEY,
+//     TIRE_AXLE,
+//     TIRE_APPLICATION,
+//     TREAD_LENGTH_KEY,
+//     REJECT_REASON_KEY,
+//     SC_Reject_Reason_FK,
+//     USER_KEY,
+//     ORIGINAL_CUSTOMER_FK,
+//     CASING_GRADE_PK,
+//     OVERRIDE_GRADE_FK,
+//     WHEEL_TYPE_FK,
+//     WHEEL_COLOR_FK,
+//     SC_REJECT_REASON_FK,
+//     "Avg Tread Depth",
+//     LINE_NUM,
+//     CASING_ID,
+//     MFG_DOT,
+//     RT_DOT,
+//     BRAND_NUM,
+//     CASING_STATUS,
+//     REPAIR_IND,
+//     TREAD_DEPTH,
+//     ADJ_PERCENT,
+//     PROCESS_CODE,
+//     COMPLETE_DT,
+//     WORK_TYPE,
+//     NTR,
+//     "AGE",
+//     T_NOTE,
+//     REMAINING_DEPTH,
+//     CASING_ID_DESC,
+//     DEF_ADJ_PERCENT,
+//     BUFF_CIRCUM,
+//     IS_WITH_REPAIR,
+//     WARRANTY_CASING,
+//     WARRANTY_REPAIRS,
+//     TREAD_LOT_NUM,
+//     TREAD_SERIAL_NUM,
+//     BUILT_CIRCUM,
+//     CHAMBER_NUM,
+//     SEQUENCE_NUM,
+//     CURING_RESULTS,
+//     READY_FOR_RELEASE,
+//     RERUN_IND,
+//     DISPOSITION,
+//     OPERATOR_ID,
+//     REPAIRS_DONE,
+//     TREAD_APPLIED,
+//     POST_MARKER,
+//     TREAD_PREPARATION_STATUS,
+//     BUFF_PROGRAM,
+//     INSPECT_ONLY_RESULT_FLAG,
+//     BUFF_WIDTH,
+//     SKIVE_COUNT,
+//     NUM_OF_SKIVES,
+//     CASING_ADVANCE_TIMER,
+//     ADVANCED,
+//     SEND_TO_SERVICE_POST,
+//     DATE_OUT_OF_SERVICE,
+//     SHIPPING_LOCATION,
+//     REJECT_POST_NAME,
+//     REJECT_DATE,
+//     REJECT_IND,
+//     EXPORT_RM,
+//     EXPORT_FG,
+//     CUST_TYPE,
+//     CIA,
+//     PAST_BUFFER,
+//     BUFFERED,
+//     ADVANCED_FROM_BUILDER,
+//     PACK_LIST_FK,
+//     RUBBER_THICKNESS,
+//     ADJUSTMENT_NOTES,
+//     ADJUSTMENT_RW,
+//     MOLD_TYPE,
+//     XRAY_PASS,
+//     XRAY_IND,
+//     CCCP_WO_MOVED,
+//     CCCP_BUILD_FOR_STOCK,
+//     TREAD_DEPTH1,
+//     TREAD_DEPTH2,
+//     TREAD_DEPTH3,
+//     TREAD_DEPTH4,
+//     INVENTORY_DECREMENT,
+//     LENGTH_CONSUPTION,
+//     CTC_CONSUPTION,
+//     LAST_SCAN_AT,
+//     LOCK_TIME,
+//     LOCK_USER,
+//     LOCK_POST,
+//     ENVELOPE,
+//     INNER_LOPE,
+//     CREATION_DATE,
+//     DELETION_DATE,
+//     WAS_REJECTED,
+//     IGNORE_CHECK_CAM_SPEC_NTR,
+//     IGNORE_CHECK_CAM_SPEC_AGE,
+//     IGNORE_CHECK_CAM_SPEC_REP,
+//     POS_INTERFACE_ID1,
+//     POS_INTERFACE_ID2,
+//     CTC_APPLIED,
+//     CTC_LOT_NUM,
+//     CASING_VALUE,
+//     CEMENT_GLUE_LOT_NUM,
+//     REPAIR_GUM_LOT_NUM
+FROM [$(LibConnection)gra_work_order_line_$(vDealer).qvd]
+(qvd);
+
+
+left join (gra_pack_list)
+LOAD distinct 
+    CASING_SIZE_KEY,
+    CASING_SIZE
+    //,
+    //DESCRIPTION,
+    //MIN_CIRCUM,
+    //MAX_CIRCUM,
+    //CASING_CONSTRUCTION,
+    //MIN_BUILD_CIRCUM,
+    //MAX_BUILD_CIRCUM,
+    //STOCK_CASING_PART_NUMBER,
+    //CC_PART_NUMBER,
+    //CP_REJECT_PART_NUMBER,
+    //SECTION_WIDTH,
+    //ASPECT_RATIO,
+    //WHEEL_DIAMETER,
+    //LOGICAL_DELETE
+FROM [$(LibConnection)gra_casing_size_$(vDealer).qvd]
+(qvd);
+
+
+
+left join (gra_pack_list)
+LOAD distinct 
+    TREAD_DESC_KEY,
+    TREAD_DESC as pack_list_TREAD_DESC
+    //,
+    //TREAD_PIC_FILENAME,
+    //DESCRIPTION,
+    //CURE_TYPE,
+    //ACTIVE_FLAG,
+    //LOGICAL_DELETE,
+    //M3_FLAG,
+    //TREAD_MAKE,
+    //TREAD_BRAND,
+    //IMPORTED_FLAG
+FROM [$(LibConnection)gra_tread_desc_$(vDealer).qvd]
+(qvd);
+
+
+
+left join (gra_pack_list)
+LOAD distinct 
+    TREAD_WIDTH_KEY,
+    WIDTH
+    //,
+    //DESCRIPTION,
+    //LOGICAL_DELETE
+FROM [$(LibConnection)gra_tread_width_$(vDealer).qvd]
+(qvd);
+
+
+
+
+
+// //left join (gra_pack_list)
+// LOAD
+//     FINISHED_RETREAD_KEY,
+//     TREAD_DESC_KEY,
+//     CASING_SIZE_KEY,
+//     TREAD_WIDTH_KEY,
+//     FINISHED_RETREAD_PART_NUMBER,
+//     CC_CAP_AND_CASING_PART_NUMBER
+// FROM [$(LibConnection)gra_finished_retread_$(vDealer).qvd]
+// (qvd);
+
+
+// left join (gra_pack_list)
+//  LOAD
+//      CASING_GRADE_KEY,
+//      CASING_GRADE 
+//  FROM [$(LibConnection)gra_casing_grade_$(vDealer).qvd]
+//  (qvd);
+
+
+DROP FIELD  CASING_SIZE, CASING_SIZE_KEY, TREAD_DESC_KEY, TREAD_WIDTH_KEY, WORK_ORDER_LINE_KEY,  WIDTH FROM gra_pack_list;
+
+
+// gra_pack_list:
+
+//   gra_customer_info_settings.code 		AS PACK_LIST_CUSTOMER_CODE,
+//   gra_customer_info_settings.customer_name AS PACK_LIST_CUSTOMER_NAME,
+//   gra_customer_info_settings.sales_id 	AS PACK_LIST_SALES_ID,
+//   gra_plant_setup.plant_code 			AS DESTINATION_PLANT_CODE,
+//   gra_plant_setup.plant_name 			AS DESTINATION_PLANT_NAME,
+//   gra_site_setup.site_code 				AS DESTINATION_SITE_CODE,
+//   gra_site_setup.site_name 				AS DESTINATION_SITE_NAME,
+//   gra_plant_setup_1.plant_code 			AS SOURCE_PLANT_CODE,
+//   gra_plant_setup_1.plant_name 			AS SOURCE_PLANT_NAME,
+//   gra_site_setup_1.site_code 			AS SOURCE_SITE_CODE,
+//   gra_site_setup_1.site_name 			AS SOURCE_SITE_NAME,
+//   gra_casing_grade.casing_grade,
+//   gra_finished_retread.finished_retread_part_number,
+//   Concat(gra_finished_retread.cc_cap_and_casing_part_number,gra_casing_grade.casing_grade) as CC_CAP_AND_CASING_PART_NUMBER
+
+
+// LEFT JOIN gra_finished_retread ON gra_casing_size.casing_size_pk = gra_finished_retread.casing_size_fk
+// 		AND gra_tread_desc.tread_desc_pk = gra_finished_retread.tread_desc_fk
+// 		AND (CASE WHEN gra_work_order_line.mold_type='P' THEN gra_tread_width.tread_width_pk = gra_finished_retread.tread_width_fk ELSE 1=1 end)
+
+// LEFT JOIN gra_casing_grade ON (gra_work_order_line.system_grade_fk = gra_casing_grade.casing_grade_pk)
+
+
+
+
+

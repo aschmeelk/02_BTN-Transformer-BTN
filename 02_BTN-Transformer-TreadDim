@@ -1,0 +1,10 @@
+Tread_Dimension:
+LOAD 
+   CASING_SIZE_FK & '|' & TREAD_DESC_FK & '|' &  TREAD_WIDTH_FK as RAW_MATERIALS_KEY,
+   TREAD_ROLL_PART_NUMBER,
+   CTC_PART_NUMBER,
+   CASING_SIZE_FK,
+    AVERAGE_TREAD_WEIGHT,
+    AVERAGE_CTC_WEIGHT
+FROM [$(LibConnection)gra_tread_dimension_$(vDealer).qvd]
+(qvd);

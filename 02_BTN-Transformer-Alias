@@ -1,0 +1,49 @@
+RENAME FIELD WORK_ORDER_NUM 						to [Work Order];
+RENAME FIELD CASING_STATUS 							to [Casing Status];
+RENAME FIELD gra_casing_make.DESCRIPTION 			to [Brand]; 
+RENAME FIELD gra_casing_size.DESCRIPTION 			to [Size Desc];
+RENAME FIELD CASING_SERIES 							to [Series];
+RENAME FIELD gra_work_order_line_tmp.CASING_ID 		to [Tag #];
+RENAME FIELD CUSTOMER_NAME 							to [Customer Name];
+RENAME FIELD gra_customer_info_settings.CODE 		to [Customer Code];
+RENAME FIELD gra_reject_reason.DESCRIPTION 			to [Reject Description];
+RENAME FIELD REJECT_REASON 							to [Reject Code];
+RENAME FIELD BRAND_NUM 								to [Truck #];
+RENAME FIELD LINE_NUM 								to [WO Line];
+RENAME FIELD CASING_MAKE 							to [Casking Make];
+RENAME FIELD RECEIVED_DATE 							to [WO Date];
+RENAME FIELD TREAD_DESC 							to [Tread];
+RENAME FIELD gra_work_order_line_tmp.RT_DOT 		to [Retread DOT];
+RENAME FIELD MFG_DOT 								to [Manf. DOT];
+RENAME FIELD BRAND_NUM 								to [Brand No.];
+RENAME FIELD gra_work_order_line_tmp.TREAD_DEPTH 	to [Tread Depth];
+RENAME FIELD SITE_NAME 								to [Site];
+RENAME FIELD CODE_TYPE 								to [Reject Type];
+RENAME FIELD gra_repair.TYPE 						to [Repair Type];
+RENAME FIELD gra_repair.CODE 						to [Repair Code];
+RENAME FIELD gra_repair.DESCRIPTION 				to [Repair Description];
+RENAME FIELD WORK_TYPE 								to [Work Type];
+RENAME FIELD PROCESS_CODE 							to [Process Code];
+RENAME FIELD REPAIR_IND 							to [Repair Ind.];
+RENAME FIELD TIRE_APPLICATION 						to [Application];
+RENAME FIELD COMPLETE_DT 							to [Completed Date];
+RENAME FIELD ADJUSTMENT_REASON 						to [Adjustment Reason];
+RENAME FIELD CONDITION 								to [Condition];
+RENAME FIELD ADJ_PERCENT 							to [Adj %];
+RENAME FIELD WIDTH 									to [Tread Width];
+RENAME FIELD PLANT_NAME 							to [Plant Name];
+RENAME FIELD DESTINATION_SITE_NAME 					to [Destination Site];
+RENAME FIELD pack_list_num 							to [Pack List #];
+RENAME FIELD CASING_SIZE 							to [Casing Size];
+RENAME FIELD REPAIR_DATE 							to [Repair];
+RENAME FIELD gra_audit_trail.CREATE_DT 				to [Audit Create];
+
+
+// DERIVE FIELDS FROM FIELDS [WO Date], 
+// 						  [DUE_DATE], 
+//                           [Repair], 
+//                           [Completed Date], 
+//                           [Audit Create],
+//                           UPDATE_DATE,
+//                           pack_list_date_approved
+//          USING [Calendar];

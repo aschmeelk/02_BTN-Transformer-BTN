@@ -1,0 +1,15 @@
+CM_Dimension:  
+load
+    TREAD_DESC_KEY 			as TREAD_DESC_KEY,
+    TREAD_TOTAL_WEIGHT,
+    CTC_WEIGHT,
+    MIX_TYPE
+FROM [$(LibConnection)gra_custom_mold_dimension_$(vDealer).qvd]
+(qvd);
+
+
+
+
+
+
+

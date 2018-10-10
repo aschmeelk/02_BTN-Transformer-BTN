@@ -1,0 +1,55 @@
+// 28,Ozarko,Ozarko BTN (win000294_aschmeelk),lib://BTN_Extract/
+
+
+
+Dealers:
+Load * inline
+[
+DealerNo,Dealer,DataConnect,Folder
+ 1,Smetzer,Smetzer BTN (win000294_aschmeelk),lib://BTN_Extract/
+ 2,Border,Border BTN (win000294_aschmeelk),lib://BTN_Extract/
+ 3,Treads West Edmonton,TWE BTN (win000294_aschmeelk),lib://BTN_Extract/
+ 4,Belisle,Belisle BTN (win000294_aschmeelk),lib://BTN_Extract/
+ 5,Villemaire,Villemaire BTN (win000294_aschmeelk),lib://BTN_Extract/
+ 6,TWL,TWL BTN (win000294_aschmeelk),lib://BTN_Extract/
+ 7,New England,NewEngland BTN (win000294_aschmeelk),lib://BTN_Extract/
+ 8,Beasley,Beasley BTN (win000294_aschmeelk),lib://BTN_Extract/
+ 9,Big L,BigL BTN (win000294_aschmeelk),lib://BTN_Extract/
+ 10,Highlands,Highlands BTN (win000294_aschmeelk),lib://BTN_Extract/
+ 11,Quality,Quality BTN (win000294_aschmeelk),lib://BTN_Extract/
+12,Raben,Raben BTN (win000294_aschmeelk),lib://BTN_Extract/
+13,A&E,A&E BTN (win000294_aschmeelk),lib://BTN_Extract/
+14,Miller Tire,Miller BTN (win000294_aschmeelk),lib://BTN_Extract/
+15,Bill Williams,BWT BTN (win000294_aschmeelk),lib://BTN_Extract/
+16,Allied,Allied BTN (win000294_aschmeelk),lib://BTN_Extract/
+17,Canyon,Canyon BTN (win000294_aschmeelk),lib://BTN_Extract/
+18,Colony,Colony BTN (win000294_aschmeelk),lib://BTN_Extract/
+19,Superior,Superior BTN (win000294_aschmeelk),lib://BTN_Extract/
+20,MTI,MTI BTN (win000294_aschmeelk),lib://BTN_Extract/
+21,Tiremaster,Tiremaster BTN (win000294_aschmeelk),lib://BTN_Extract/
+22,Ziegler,Ziegler BTN (win000294_aschmeelk),lib://BTN_Extract/
+23,Shrader,Shrader BTN (win000294_aschmeelk),lib://BTN_Extract/
+24,Jacks,Jacks BTN (win000294_aschmeelk),lib://BTN_Extract/
+25,Valley,Valley BTN (win000294_aschmeelk),lib://BTN_Extract/
+26,Loves,Loves BTN (win000294_aschmeelk),lib://BTN_Extract/
+27,STTC,STTC BTN (win000294_aschmeelk),lib://BTN_Extract/
+28,TCI,TCI BTN (win000294_aschmeelk),lib://BTN_Extract/
+29,Bauer,Bauer BTN (win000294_aschmeelk),lib://BTN_Extract/
+30,T&W,T_W BTN (win000294_aschmeelk),lib://BTN_Extract/
+31,Snider,Snider BTN (win000294_aschmeelk),lib://BTN_Extract/
+];
+ 
+
+LET NumRows=NoOfRows('Dealers');
+
+FOR i=0 to $(NumRows)-1
+  	
+    LET vDataConnect=Peek('DataConnect',$(i), 'Dealers' );
+    LET vDealer=Peek('Dealer',$(i), 'Dealers' );
+    LET vFolder=Peek('Folder',$(i), 'Dealers' );
+    Let vDealerMap= Replace( Replace('$(vDealer)', ' ', '_') , '&','_');
+      
+    trace -------- $(vDealerMap) ------------ ;
+    
+    Let LibConnection = '$(vFolder)';
+	Let vProvider = '$(vDealer)';

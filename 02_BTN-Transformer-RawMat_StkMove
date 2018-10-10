@@ -1,0 +1,44 @@
+gra_stock_movement:
+LOAD
+    	RAW_MATERIAL_STOCK,
+    	SERIAL_NUMBER,
+    	STOCK_MOVEMENT_TYPE,
+    	"COMMENT",
+    	QTY,
+    	QTY_UNIT,
+    	UPDATE_DATE,
+    	UPDATE_USER,
+    	RAW_MATERIAL_KEY,
+    	WORK_ORDER_LINE_KEY,
+    	CURRENT_PART_NUMBER,
+    	CURRENT_COST,
+        date(floor(UPDATE_DATE))	as [Update Date]
+FROM [$(LibConnection)gra_stock_movement_$(vDealer).qvd]
+(qvd)
+where EXISTS(WORK_ORDER_LINE_KEY)
+//floor(UPDATE_DATE) >=  $(vYearMinus3)
+//and floor(UPDATE_DATE) <=  $(vCurrentDate)
+//and EXISTS(WORK_ORDER_LINE_KEY)
+;
+
+
+
+
+gra_raw_material:
+LOAD
+    RAW_MATERIAL_KEY,
+    RAW_MATERIAL,
+    if(RAW_MATERIAL='CUSHION','CTC','TREAD') AS WEIGHT_TYPE,
+    SERIAL_NUM,
+    RAW_MATERIAL_QTY,
+    RAW_MATERIAL_QTY_UNIT,
+    RAW_MATERIAL_TYPE,
+    LAST_UPDATE_DATE
+FROM [$(LibConnection)gra_raw_material_$(vDealer).qvd]
+(qvd)
+where EXISTS(RAW_MATERIAL_KEY)
+//floor(LAST_UPDATE_DATE) >=  $(vYearMinus3)
+//and floor(LAST_UPDATE_DATE) <=  $(vCurrentDate)
+//and EXISTS(RAW_MATERIAL_KEY)
+;
+

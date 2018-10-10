@@ -1,0 +1,43 @@
+	let zTimeMark = Now(1);
+	Let vTable = 'LoadStatistics';
+
+
+  	LoadStatistics: 
+    Load * inline [ 
+      %FunctionName, %StartTime, %Duration, %Count, %Tag
+      '', '', '', '', ''
+    ];
+    
+    Tables_Stadistics: 
+    Load * inline [ 
+      %Num, %Table, %Num_Of_Records, DealerName
+      '', '', ''
+    ];
+
+Sub TimeLog(vFunctionName, zTimeMark, vTag)
+    
+    LET zDuration=interval(now(1)-zTimeMark, 'hh:mm:ss.fff');
+    Let vCount =  NoOfRows('LoadStatistics');
+    
+    LoadStatistics: 
+    Load * inline [ 
+      %FunctionName, %StartTime, %Duration, %Count, %Tag
+      '$(vFunctionName)', '$(zTimeMark)', '$(zDuration)', '$(vCount)', '$(vDealer)'
+    ];
+    
+    let zTimeMark = now(1);
+    
+EndSub
+
+
+Sub SaveQVD (vTable)
+
+    Trace  ----Store table: $(vDealer) - $(vTable);
+    
+
+	STORE $(vTable) INTO [lib://BTN_Transform/Trans_$(vTable)_$(vDealer).qvd] (qvd);
+	Drop Table $(vTable);
+    
+
+EndSub
+

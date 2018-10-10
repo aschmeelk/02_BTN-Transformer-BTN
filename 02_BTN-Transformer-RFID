@@ -1,0 +1,68 @@
+gra_rfid_tag:
+LOAD
+	RFID_TAG_KEY,
+    RFID_CASING_ID,
+    [RFID Tag Num],
+    [RFID Decoded Tag],
+    [RFID Staus],
+    [RFID Added In Post],
+    NEW_TAG,
+    [RFID Date Loaded],
+    CREATED_BY_USER_FK,
+    [RFID Updated],
+    UPDATED_BY_USER_FK,
+    WRITE_FAILED;    
+LOAD
+    RFID_TAG_KEY,
+    CASING_ID  				AS RFID_CASING_ID,
+    TAG_NUM					AS 'RFID Tag Num',
+    DECODED_TAG				AS 'RFID Decoded Tag',
+    STATUS					AS 'RFID Staus',
+    ADDED_IN_POST			AS 'RFID Added In Post',
+    NEW_TAG,
+    DATE_LOADED				AS 'RFID Date Loaded',
+    CREATED_BY_USER_FK,
+    DATE_UPDATED			AS 'RFID Updated',
+    UPDATED_BY_USER_FK,
+    WRITE_FAILED
+FROM [$(LibConnection)gra_rfid_tag_$(vDealer).qvd]
+(qvd);
+
+
+
+
+
+
+
+gra_rfid_tag_history:
+LOAD
+	RFID_TAG_HISTORY_KEY,
+    WORK_ORDER_LINE_FK,
+    RFID_CASING_ID,
+    [rTag Num History],
+    [Decoded Tag History],
+    [Status History],
+    [Added At Post History],
+    [Updated At Post History],
+    TAG_KILLED,
+    [Date Loaded History],
+    [Date Updated History];
+LOAD
+    RFID_TAG_HISTORY_KEY,
+    WORK_ORDER_LINE_FK,
+    CASING_ID					AS RFID_CASING_ID,
+    TAG_NUM						AS 'rTag Num History',
+    DECODED_TAG					AS 'Decoded Tag History',
+    STATUS						AS 'Status History',
+    ADDED_IN_POST				AS 'Added At Post History',
+    UPDATED_IN_POST				AS 'Updated At Post History',
+    TAG_KILLED,
+    DATE_LOADED					As 'Date Loaded History',
+    DATE_UPDATED				AS 'Date Updated History'
+FROM [$(LibConnection)gra_rfid_tag_history_$(vDealer).qvd]
+(qvd);
+
+
+
+
+

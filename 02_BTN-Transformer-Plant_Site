@@ -1,0 +1,46 @@
+gra_site_setup:
+LOAD
+     SITE_SETUP_KEY,
+     SITE_CODE,
+     SITE_NAME,
+     ADDRESS_ONE,
+     ADDRESS_TWO,
+     CITY,
+     STATE_PROVINCE,
+     POSTAL_CODE,
+     COUNTRY_CODE 			AS SITE_COUNTRY_CODE,
+     CONTACT_NAME,
+     PHONE_NUMBER,
+     FAX_NUMBER,
+//     EMAIL_ADRESS,
+     SITE_ACTIVE,
+     INTERFACE_ID1,
+     INTERFACE_ID2,
+     SHIPPING,
+     RECEIVING,
+     SCRAP_SHIPPING,
+     SERVICE_POST_ENABLED,
+     REJECT_BY_CASING_POST,
+     REJECT_BY_CUSTOMER_POST
+FROM [$(LibConnection)gra_site_setup_$(vDealer).qvd]
+(qvd)
+Where Exists(SITE_SETUP_KEY)
+;
+
+
+
+gra_plant_setup:
+LOAD
+    PLANT_SETUP_PK			AS	PLANT_SETUP_KEY,
+    PLANT_CODE,
+    PLANT_NAME,
+    CITY					AS [Plant City],
+    STATE_PROVINCE			AS [Plant State-Province],
+    POSTAL_CODE				AS [Plant Postal Code],
+    COUNTRY_CODE			AS PLANT_COUNTRY_CODE,
+    DUE_DT_ELAPSED_TIME		AS [Days Till Due]
+FROM [$(LibConnection)gra_plant_setup_$(vDealer).qvd]
+(qvd)
+Where Exists(PLANT_SETUP_KEY, PLANT_SETUP_PK)
+;
+

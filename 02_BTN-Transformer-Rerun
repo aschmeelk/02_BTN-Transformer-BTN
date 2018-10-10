@@ -1,0 +1,41 @@
+gra_wol_rerun_ind:
+LOAD
+    WORK_ORDER_LINE_KEY,
+    RERUN_IND,
+    CREATE_DT,
+    RERUN_KEY,
+    SECONDARY_REASON1_REF,
+    SECONDARY_REASON2_REF,
+    SECONDARY_REASON3_REF,
+    POST_NAME,
+    REWORK_REPAIRS,
+    TREAD_APPLIED,
+    CTC_APPLIED,
+     USER_FK   as USER_FK2 
+FROM [$(LibConnection)gra_wol_rerun_ind_$(vDealer).qvd]
+(qvd)
+WHERE EXISTS(WORK_ORDER_LINE_KEY)
+;
+
+LEFT JOIN (gra_wol_rerun_ind)
+LOAD
+    User_Key     AS  USER_FK2,
+    LOGIN		 AS	 RERUN_USER_LOGIN
+FROM [$(LibConnection)gra_user_$(vDealer).qvd]
+(qvd);
+
+
+
+
+gra_rerun:
+LOAD
+    RERUN_PK		as	RERUN_KEY,
+    RERUN,
+    DESCRIPTION,
+    REASON_TYPE		as	RERUN_REASON_TYPE,
+    ACTIVE,
+    CURE_PROCESS
+FROM [$(LibConnection)gra_rerun_$(vDealer).qvd]
+(qvd)
+WHERE EXISTS(RERUN_KEY, RERUN_PK)
+;

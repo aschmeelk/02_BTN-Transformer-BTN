@@ -1,0 +1,99 @@
+gra_customer_info_settings:
+LOAD
+    CUSTOMER_INFO_SETTINGS_PK 		as 	CUSTOMER_INFO_SETTINGS_KEY,
+    CODE,
+    ACTIVE,
+    CUSTOMER_NAME,
+    ADDRESS1,
+    ADDRESS2,
+    CITY,
+    POSTAL_CODE,
+    COUNTRY,
+    CONTACT,
+    EMAIL,
+    PHONE_NUMBER,
+    FAX_NUMBER,
+    STATE_PROVINCE,
+    SHIP_TO_CODE,
+    SALES_ID,
+    ROUTE_ID,
+    ENTREPRISE_ID,
+    ////CUSTOMER_SPECIFICATION_STOCK_FK,
+    CUSTOMER_REJECTS_DISPOSITION,
+    ////CUSTOMER_SPECIFICATION_FK,
+    STOCK_REJECTS_DISPOSITION,
+    ////PREFERRED_TREAD_SPECIFICATION_FK,
+    ////CASING_GRADE_TABLE_FK,
+    ////FREE_REPAIR_TABLE_FK,
+    CENTRAL_REJECT,
+    TURNAROUND_TIME,
+    BRAND,
+    REMEMBER_BRAND,
+    REMEMBER_CASING_NOTE,
+    TREAD_DEPTH,
+    FINISHED_LABEL_FORMAT,
+    REJECT_RETURN_LABEL_FORMAT,
+    REJECT_SCRAP_LABEL_FORMAT,
+    BARCODE_LABEL_FORMAT,
+    WHEEL_PROCESSING,
+    ////CASING_CREDIT_FK,
+    ////CASING_PURCHASE_FK,
+    SHIP_TO,
+    BILL_TO,
+    LANGUAGE,
+    INTERFACE_ID1,
+    INTERFACE_ID2,
+    NOTE,
+    "TYPE",
+    ASSOCIATED_TO,
+    ////DISPOSAL_CHARGES_FK,
+    REPAIR_LIMITS_CHECK_APPLY_WHEN,
+    IMPORTED,
+    CAM_PRODUCT_SP_RR_FK				as CAM_PRODUCT_SP_KEY,
+    ////CAM_PRODUCT_SP_RO_FK,
+    ////CAM_PRODUCT_SP_STOCK_RR_FK,
+   	NAFA_CUSTOMER_FK  					AS NAFA_CUSTOMER_KEY, 
+    SCRAP_CASING_PLANT,
+    PLANT_ASSIGNMENT,
+    RT_DOT,
+    INCLUDE_SCRAP_CASINGS_REJECT_CUSTOMER,
+    BTM_FLAG,
+    RFID_CUST_FLAG,
+    IS_NAFA_CUSTOMER_LOGICALLY_DELETED,
+    IS_NAFA_CUSTOMER,
+    NAFA_CUSTOMER_HOLD_CODE
+FROM [$(LibConnection)gra_customer_info_settings_$(vDealer).qvd]
+(qvd);
+
+LEFT JOIN (gra_customer_info_settings)
+LOAD
+    CAM_PRODUCT_SP_KEY,
+    CODE    			AS CAM_SPEC_ID
+FROM [$(LibConnection)gra_cam_product_sp_$(vDealer).qvd]
+(qvd);
+
+
+LEFT JOIN (gra_customer_info_settings)
+LOAD
+	CUSTOMER_INFO_SETTINGS_PK 		as 	CUSTOMER_INFO_SETTINGS_KEY,
+    CUSTOMER_NAME 	AS ADC_NAME,
+    ASSOCIATED_TO	AS ADC_KEY
+FROM [$(LibConnection)gra_customer_info_settings_$(vDealer).qvd]
+(qvd);
+
+
+
+
+
+
+// // Load to separate out ADC from Customer list    
+//Left Join (gra_customer_info_settings)
+  ADC_Customer:
+  Load
+ 	CUSTOMER_NAME as [New ADC Name],
+  	gra_customer_info_settings.CODE as [New ADC Code],
+  	gra_customer_info_settings.CODE
+  Resident gra_customer_info_settings
+  Where gra_customer_info_settings.TYPE='AssociateCustomer';
+  
+  

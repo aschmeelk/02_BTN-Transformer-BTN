@@ -1,0 +1,39 @@
+call SaveQVD ('gra_work_order_line');
+call SaveQVD ('Tread_Dimension');
+call SaveQVD ('CM_Dimension');
+call SaveQVD ('gra_work_order_header');
+call SaveQVD ('gra_site_setup');
+call SaveQVD ('gra_plant_setup');
+call SaveQVD ('gra_tread_desc');
+call SaveQVD ('gra_tread_repair');
+call SaveQVD ('gra_repair');
+call SaveQVD ('gra_tread_width');
+call SaveQVD ('gra_casing_make');
+call SaveQVD ('gra_casing_series');
+call SaveQVD ('gra_casing_size');
+call SaveQVD ('gra_casing_credit_repair');
+call SaveQVD ('gra_rfid_tag');
+call SaveQVD ('gra_rfid_tag_history');
+call SaveQVD ('gra_adjustment_reason');
+call SaveQVD ('gra_reject_reason');
+call SaveQVD ('Scrap_reason');
+call SaveQVD ('gra_customer_info_settings');
+call SaveQVD ('gra_pack_list_detail');
+call SaveQVD ('gra_pack_list');
+call SaveQVD ('gra_nafa_customers');
+call SaveQVD ('gra_wol_rerun_ind');
+call SaveQVD ('gra_rerun');
+call SaveQVD ('gra_audit_trail');
+call SaveQVD ('gra_stock_movement');
+call SaveQVD ('gra_raw_material');
+call SaveQVD ('DateBridge');
+call SaveQVD ('ADC_Customer');
+// call SaveQVD ('gra_btm_trans');
+call SaveQVD ('MasterCalendar');
+
+Call TimeLog(vDealer, zTimeMark, vDealer);
+
+
+
+
+ NEXT;

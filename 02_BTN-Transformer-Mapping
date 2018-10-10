@@ -1,0 +1,41 @@
+MAP_gra_custom_mold_dimension_$(vDealerMap):
+Mapping
+LOAD
+    TREAD_DESC_KEY as TREAD_DESC_KEY,
+    TREAD_DEPTH
+FROM [$(LibConnection)gra_custom_mold_dimension_$(vDealer).qvd]
+(qvd);
+
+
+
+MAP_gra_tread_dimension_$(vDealerMap):
+Mapping
+LOAD
+    TREAD_DESC_FK	as	TREAD_DESC_KEY,
+    TREAD_DEPTH
+FROM [$(LibConnection)gra_tread_dimension_$(vDealer).qvd]
+(qvd);
+
+
+MAP_gra_plant_setup_$(vDealerMap):
+Mapping
+LOAD
+    PLANT_SETUP_PK,
+    PLANT_CODE
+FROM [$(LibConnection)gra_plant_setup_$(vDealer).qvd]
+(qvd);
+
+
+
+MAP_ship_plant_match_$(vDealerMap):
+Mapping
+LOAD
+    WORK_ORDER_HEADER_PK,
+    ApplyMap('MAP_gra_plant_setup_$(vDealerMap)', PLANT_SETUP_FK) AS PLANT_CODE
+FROM [$(LibConnection)gra_work_order_header_$(vDealer).qvd]
+(qvd);
+
+
+
+
+

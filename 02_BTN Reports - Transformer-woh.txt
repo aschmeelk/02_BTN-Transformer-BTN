@@ -1,0 +1,69 @@
+gra_work_order_header_tmp:
+LOAD
+     WORK_ORDER_HEADER_PK 	as WORK_ORDER_HEADER_KEY,
+     SITE_FK 				as SITE_SETUP_KEY,
+     CUSTOMER_FK,
+     PLANT_SETUP_FK						as PLANT_SETUP_KEY,
+     WORK_ORDER_NUM						as Work_Order_Number,
+     '$(vDealer)|' & WORK_ORDER_NUM		as Work_Order_Number_key,
+     RECEIVED_DATE,
+     DUE_DATE,
+     CRN_NUM,
+     INVOICE_SERIES,
+     COM_OPERATION_CODE,
+      Upper(STATUS)				AS [WO Status],
+     NF_DATE_ISSUED,
+     FISCAL_ID_NUM,
+     DELIVERY_DAY,
+     OVERRIDE_ADDRESS_FLAG,
+     TOTAL_LINES,
+     OPTIONAL_DATE1,
+     OPTIONAL_DATE2,
+     OPTIONAL_TEXT1,
+     OPTIONAL_TEXT2,
+     SOURCE_CUSTOMER_NAME,
+     TRANSFER_DATE,
+    TRANSFER_FLAG
+FROM [$(LibConnection)gra_work_order_header_$(vDealer).qvd]
+(qvd)
+where floor(RECEIVED_DATE) >=  $(vYearMinus3)
+  and floor(RECEIVED_DATE) <=  $(vCurrentDate)
+//  AND EXISTS(WORK_ORDER_HEADER_KEY, WORK_ORDER_HEADER_PK)
+;
+
+left join (gra_work_order_header_tmp)
+GRA_CUSTOMER_INFO_SETTINGS:
+LOAD
+    CUSTOMER_INFO_SETTINGS_PK   as CUSTOMER_FK,
+    CUSTOMER_NAME  				as	INVOICE_CUSTOMER_NAME
+FROM [$(LibConnection)gra_customer_info_settings_$(vDealer).qvd]
+(qvd);
+
+
+
+left join (gra_work_order_header_tmp)
+gra_btm_trans:
+LOAD
+    '$(vDealer)|'& WORK_ORDER_NUM	as Work_Order_Number_key,
+    USER_ID							as BTM_USER,
+//     ERROR_TYPE,
+//     TRANSACTION_INFO,
+//     TRANSACTION_TIMESTAMP,
+//     TRANSACTION_TYPE,
+    DEVICE_NAME,
+    DEVICE_OS
+FROM [$(LibConnection)gra_btm_trans_$(vDealer).qvd]
+(qvd);
+
+
+
+gra_work_order_header:
+Load *,
+	if (DaysOverDue >= 1,1,0)			AS _flagIsOverDue;
+LOAD * ,
+	floor(today())-floor(DUE_DATE)		AS DaysOverDue
+Resident gra_work_order_header_tmp
+WHERE EXISTS(WORK_ORDER_HEADER_KEY)
+;
+
+drop Table  gra_work_order_header_tmp;
